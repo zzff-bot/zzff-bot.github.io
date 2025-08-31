@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健身计划生成器 - 设置</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .api-key-input {
+            width: 100%;
+            font-family: monospace;
+        }
+        .settings-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <header>
+            <h1>健身计划生成器 - 设置</h1>
+            <p>配置AI服务和应用程序设置</p>
+        </header>
+
+        <main>
+            <section class="settings-card">
+                <h2>AI服务设置</h2>
+                <div class="setting-row">
+                    <div>
+                        <label for="use-ai">使用AI生成计划</label>
+                        <p class="description">启用后，将使用AI服务生成更加个性化的健身和饮食计划</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="use-ai">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div id="ai-settings" style="display: none;">
+                    <div class="form-group">
+                        <label for="api-key">API密钥</label>
+                        <input type="password" id="api-key" class="api-key-input" placeholder="输入您的OpenAI API密钥">
+                        <p class="description">您可以从OpenAI官网获取API密钥: <a href="https://platform.openai.com/api-keys" target="_blank">https://platform.openai.com/api-keys</a></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model-name">AI模型</label>
+                        <select id="model-name">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo (推荐)</option>
+                            <option value="gpt-4">GPT-4 (更高质量，但更贵)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-card">
+                <h2>应用程序设置</h2>
+                <div class="setting-row">
+                    <div>
+                        <label for="dark-mode">深色模式</label>
+                        <p class="description">切换应用程序的深色/浅色主题</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <label for="save-history">保存历史记录</label>
+                        <p class="description">保存您生成的计划历史记录</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="save-history" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button id="save-settings" class="btn btn-primary">保存设置</button>
+                <a href="index.html" class="btn btn-secondary">返回主页</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const useAIToggle = document.getElementById('use-ai');
+            const aiSettings = document.getElementById('ai-settings');
+            const apiKeyInput = document.getElementById('api-key');
+            const modelNameSelect = document.getElementById('model-name');
+            const darkModeToggle = document.getElementById('dark-mode');
+            const saveHistoryToggle = document.getElementById('save-history');
+            const saveButton = document.getElementById('save-settings');
+
+            // 加载保存的设置
+            useAIToggle.checked = localStorage.getItem('use_ai') === 'true';
+            apiKeyInput.value = localStorage.getItem('ai_api_key') || '';
+            modelNameSelect.value = localStorage.getItem('ai_model') || 'gpt-3.5-turbo';
+            darkModeToggle.checked = localStorage.getItem('dark_mode') === 'true';
+            saveHistoryToggle.checked = localStorage.getItem('save_history') !== 'false';
+
+            // 显示/隐藏AI设置
+            aiSettings.style.display = useAIToggle.checked ? 'block' : 'none';
+            useAIToggle.addEventListener('change', function() {
+                aiSettings.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // 保存设置
+            saveButton.addEventListener('click', function() {
+                localStorage.setItem('use_ai', useAIToggle.checked);
+                localStorage.setItem('ai_api_key', apiKeyInput.value);
+                localStorage.setItem('ai_model', modelNameSelect.value);
+                localStorage.setItem('dark_mode', darkModeToggle.checked);
+                localStorage.setItem('save_history', saveHistoryToggle.checked);
+
+                // 应用深色模式
+                if (darkModeToggle.checked) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+
+                alert('设置已保存！');
+            });
+
+            // 应用深色模式
+            if (darkModeToggle.checked) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>

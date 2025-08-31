@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健身计划生成器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>健身计划生成器</h1>
+            <p>根据您的个人信息，生成定制化的一周食谱和健身计划</p>
+        </header>
+
+        <main>
+            <section class="user-form">
+                <h2>个人信息</h2>
+                <form id="userInfoForm">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">年龄</label>
+                        <input type="number" id="age" name="age" min="16" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">性别</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">请选择</option>
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weight">体重 (kg)</label>
+                        <input type="number" id="weight" name="weight" min="30" max="300" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="height">身高 (cm)</label>
+                        <input type="number" id="height" name="height" min="100" max="250" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activityLevel">日常活动水平</label>
+                        <select id="activityLevel" name="activityLevel" required>
+                            <option value="">请选择</option>
+                            <option value="sedentary">久坐不动 (几乎不运动)</option>
+                            <option value="light">轻度活动 (每周运动1-3次)</option>
+                            <option value="moderate">中度活动 (每周运动3-5次)</option>
+                            <option value="active">积极活动 (每周运动6-7次)</option>
+                            <option value="veryActive">非常活跃 (每天高强度运动或体力劳动)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goal">健身目标</label>
+                        <select id="goal" name="goal" required>
+                            <option value="">请选择</option>
+                            <option value="loseWeight">减肥</option>
+                            <option value="maintainWeight">保持体重</option>
+                            <option value="gainWeight">增重</option>
+                            <option value="buildMuscle">增肌</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dietaryRestrictions">饮食限制</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="dietaryRestrictions" value="vegetarian"> 素食主义
+                            </label>
+                            <label>
+                                <input type="checkbox" name="dietaryRestrictions" value="vegan"> 纯素食主义
+                            </label>
+                            <label>
+                                <input type="checkbox" name="dietaryRestrictions" value="glutenFree"> 无麸质
+                            </label>
+                            <label>
+                                <input type="checkbox" name="dietaryRestrictions" value="lactoseFree"> 无乳糖
+                            </label>
+                            <label>
+                                <input type="checkbox" name="dietaryRestrictions" value="nutFree"> 无坚果
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutDays">每周健身天数</label>
+                        <select id="workoutDays" name="workoutDays" required>
+                            <option value="">请选择</option>
+                            <option value="3">3天</option>
+                            <option value="4">4天</option>
+                            <option value="5">5天</option>
+                            <option value="6">6天</option>
+                            <option value="7">7天</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutDuration">每次健身时长 (分钟)</label>
+                        <input type="number" id="workoutDuration" name="workoutDuration" min="15" max="180" step="5" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workoutExperience">健身经验</label>
+                        <select id="workoutExperience" name="workoutExperience" required>
+                            <option value="">请选择</option>
+                            <option value="beginner">初学者</option>
+                            <option value="intermediate">中级</option>
+                            <option value="advanced">高级</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">电子邮箱</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">手机号码</label>
+                        <input type="tel" id="phone" name="phone" pattern="[0-9]{11}" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">生成计划</button>
+                        <button type="reset" class="btn btn-secondary">重置</button>
+                    </div>
+                </form>
+            </section>
+            
+            <section class="results" id="results" style="display: none;">
+                <h2>您的个性化计划</h2>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="meal-plan">食谱计划</button>
+                    <button class="tab-btn" data-tab="workout-plan">健身计划</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div id="meal-plan" class="tab-pane active">
+                        <h3>一周食谱计划</h3>
+                        <div id="meal-plan-content"></div>
+                    </div>
+                    
+                    <div id="workout-plan" class="tab-pane">
+                        <h3>一周健身计划</h3>
+                        <div id="workout-plan-content"></div>
+                    </div>
+                </div>
+                
+                <div class="plan-actions">
+                    <button id="downloadPlan" class="btn btn-primary">下载计划</button>
+                    <button id="sharePlan" class="btn btn-secondary">分享计划</button>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 健身计划生成器. 保留所有权利.</p>
+        </footer>
+    </div>
+    
+    <!-- 设置链接 -->
+    <a href="settings.html" class="settings-link" title="设置">
+        <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
+    </a>
+    
+    <script src="ai-service.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // 检查并应用深色模式
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('dark_mode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
