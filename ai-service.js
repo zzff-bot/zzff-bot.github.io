@@ -105,11 +105,18 @@ class AIService {
                 requestBody.model = this.model || 'deepseek-chat';
             }
             
-            const response = await fetch(this.apiEndpoint, {
+            console.log(`正在调用${this.provider} API，模型: ${requestBody.model}`);
+            
+            // 使用代理服务器解决CORS问题
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = this.apiEndpoint;
+            
+            const response = await fetch(proxyUrl + targetUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify(requestBody)
             });
