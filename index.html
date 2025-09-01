@@ -185,5 +185,26 @@
             }
         });
     </script>
+    
+    <!-- AI测试用例方框 -->
+    <div class="ai-test-box">
+        <h4>AI测试</h4>
+        <div id="ai-test-result">等待生成...</div>
+    </div>
+    
+    <script>
+        // 监听计划生成事件，更新AI测试结果
+        document.getElementById('userInfoForm').addEventListener('submit', function(e) {
+            // 重置测试结果
+            document.getElementById('ai-test-result').textContent = '等待生成...';
+            
+            // 在计划生成完成后更新测试结果
+            setTimeout(function() {
+                const useAI = localStorage.getItem('use_ai') === 'true';
+                document.getElementById('ai-test-result').textContent = useAI ? 'true (使用AI)' : 'false (未使用AI)';
+                document.getElementById('ai-test-result').className = useAI ? 'ai-true' : 'ai-false';
+            }, 3000); // 给予足够时间生成计划
+        });
+    </script>
 </body>
 </html>

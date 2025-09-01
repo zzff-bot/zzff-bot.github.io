@@ -1,9 +1,18 @@
 // AI服务连接接口
 class AIService {
-    constructor(apiKey, apiEndpoint) {
+    constructor(apiKey, model = 'deepseek-chat', provider = 'deepseek') {
         this.apiKey = apiKey;
-        this.apiEndpoint = apiEndpoint || 'https://api.openai.com/v1/chat/completions';
-        this.modelName = 'gpt-3.5-turbo'; // 默认使用GPT-3.5 Turbo模型
+        this.model = model;
+        this.provider = provider;
+        
+        // 根据不同的AI提供商设置不同的API端点
+        if (provider === 'openai') {
+            this.apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+        } else if (provider === 'deepseek') {
+            this.apiEndpoint = 'https://api.deepseek.com/v1/chat/completions';
+        } else {
+            console.error('不支持的AI提供商');
+        }
     }
 
     // 设置模型名称
@@ -82,18 +91,27 @@ class AIService {
     // 调用AI API
     async _callAPI(messages) {
         try {
+            // 准备请求参数
+            const requestBody = {
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 2000
+            };
+            
+            // 根据不同的提供商设置不同的模型参数
+            if (this.provider === 'openai') {
+                requestBody.model = this.model || 'gpt-3.5-turbo';
+            } else if (this.provider === 'deepseek') {
+                requestBody.model = this.model || 'deepseek-chat';
+            }
+            
             const response = await fetch(this.apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify({
-                    model: this.modelName,
-                    messages: messages,
-                    temperature: 0.7,
-                    max_tokens: 2000
-                })
+                body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {

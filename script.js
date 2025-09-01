@@ -10,14 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadPlanBtn = document.getElementById('downloadPlan');
     const sharePlanBtn = document.getElementById('sharePlan');
     
+    // 预设DeepSeek API密钥（如果尚未设置）
+    if (!localStorage.getItem('ai_api_key')) {
+        localStorage.setItem('ai_api_key', 'sk-c6fb6792ecab44bab799d810047c7cec');
+        localStorage.setItem('ai_provider', 'deepseek');
+        localStorage.setItem('ai_model', 'deepseek-chat');
+        localStorage.setItem('use_ai', 'true');
+        console.log('已预设DeepSeek API密钥');
+    }
+    
     // 初始化AI服务
     let aiService = null;
     try {
         // 从本地存储获取API密钥
         const apiKey = localStorage.getItem('ai_api_key');
+        const provider = localStorage.getItem('ai_provider') || 'deepseek';
+        const model = localStorage.getItem('ai_model') || 'deepseek-chat';
+        
         if (apiKey) {
-            aiService = new AIService(apiKey);
-            console.log('AI服务已初始化');
+            aiService = new AIService(apiKey, model, provider);
+            console.log(`AI服务已初始化，提供商: ${provider}，模型: ${model}`);
         }
     } catch (error) {
         console.error('初始化AI服务失败:', error);

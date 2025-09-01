@@ -98,10 +98,20 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="ai-provider">AI 提供商</label>
+                        <select id="ai-provider" class="form-control">
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="openai">OpenAI</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="model-name">AI模型</label>
                         <select id="model-name">
-                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo (推荐)</option>
-                            <option value="gpt-4">GPT-4 (更高质量，但更贵)</option>
+                            <option value="deepseek-chat" data-provider="deepseek">DeepSeek Chat</option>
+                            <option value="deepseek-coder" data-provider="deepseek">DeepSeek Coder</option>
+                            <option value="gpt-3.5-turbo" data-provider="openai">GPT-3.5 Turbo (推荐)</option>
+                            <option value="gpt-4" data-provider="openai">GPT-4 (更高质量，但更贵)</option>
                         </select>
                     </div>
                 </div>
@@ -149,10 +159,13 @@
             const saveHistoryToggle = document.getElementById('save-history');
             const saveButton = document.getElementById('save-settings');
 
+            const aiProviderSelect = document.getElementById('ai-provider');
+            
             // 加载保存的设置
             useAIToggle.checked = localStorage.getItem('use_ai') === 'true';
             apiKeyInput.value = localStorage.getItem('ai_api_key') || '';
-            modelNameSelect.value = localStorage.getItem('ai_model') || 'gpt-3.5-turbo';
+            aiProviderSelect.value = localStorage.getItem('ai_provider') || 'deepseek';
+            modelNameSelect.value = localStorage.getItem('ai_model') || 'deepseek-chat';
             darkModeToggle.checked = localStorage.getItem('dark_mode') === 'true';
             saveHistoryToggle.checked = localStorage.getItem('save_history') !== 'false';
 
@@ -161,11 +174,35 @@
             useAIToggle.addEventListener('change', function() {
                 aiSettings.style.display = this.checked ? 'block' : 'none';
             });
+            
+            // 根据AI提供商筛选模型选项
+            function updateModelOptions() {
+                const provider = aiProviderSelect.value;
+                Array.from(modelNameSelect.options).forEach(option => {
+                    const optionProvider = option.getAttribute('data-provider');
+                    option.style.display = optionProvider === provider ? '' : 'none';
+                });
+                
+                // 选择当前提供商的第一个可见选项
+                const visibleOption = Array.from(modelNameSelect.options).find(
+                    option => option.getAttribute('data-provider') === provider
+                );
+                if (visibleOption) {
+                    modelNameSelect.value = visibleOption.value;
+                }
+            }
+            
+            // 初始更新模型选项
+            updateModelOptions();
+            
+            // 当AI提供商变化时更新模型选项
+            aiProviderSelect.addEventListener('change', updateModelOptions);
 
             // 保存设置
             saveButton.addEventListener('click', function() {
                 localStorage.setItem('use_ai', useAIToggle.checked);
                 localStorage.setItem('ai_api_key', apiKeyInput.value);
+                localStorage.setItem('ai_provider', aiProviderSelect.value);
                 localStorage.setItem('ai_model', modelNameSelect.value);
                 localStorage.setItem('dark_mode', darkModeToggle.checked);
                 localStorage.setItem('save_history', saveHistoryToggle.checked);
